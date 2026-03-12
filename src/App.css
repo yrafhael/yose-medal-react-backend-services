@@ -20,3 +20,36 @@
   background-color: inherit;
   z-index: 10;
 }
+
+/* Minimal Radix tooltip styling */
+.tooltip-content {
+  background-color: inherit;
+  border: solid rgba(120, 120, 120, 0.5) 0.5px;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+}
+
+.tooltip-arrow {
+  fill: currentColor;
+}
+
+/* Minimal Radix toast positioning */
+.toast-viewport {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 30;
+  outline: none;
+}
+
+.toast-root {
+  background-color: inherit;
+  border: solid rgba(120, 120, 120, 0.5) 0.5px;
+  border-radius: 6px;
+  padding: 10px 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}

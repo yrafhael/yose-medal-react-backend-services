@@ -1,41 +1,37 @@
-import { Box, Table, Flex, Badge, Button } from "@radix-ui/themes";
-import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
-import MedalSvg from "./MedalSvg";
-import { tc } from "../Utils.js";
+import { Flex, Text, Button } from "@radix-ui/themes";
+import AppTooltip from "./AppTooltip";
 
-function Medal(props) {
+function Medal({ country, medal, onIncrement, onDecrement, canPatch }) {
+  const medalName =
+    medal.name.charAt(0).toUpperCase() + medal.name.slice(1);
+
+  const medalCount = country[medal.name];
+
   return (
-    <Table.Row>
-      <Table.RowHeaderCell>
-        <Flex align="center">
-          <MedalSvg color={props.medal.color} />
-          <Box pl="2">{tc(props.medal.name)} Medals</Box>
+    <Flex justify="between" align="center">
+      <Text>
+        {medalName}: {medalCount}
+      </Text>
+
+      {canPatch && (
+        <Flex gap="2">
+          <AppTooltip content={`Increase ${medalName}`}>
+            <Button onClick={() => onIncrement(country.id, medal.name)}>+</Button>
+          </AppTooltip>
+
+          <AppTooltip content={`Decrease ${medalName}`}>
+            <span>
+              <Button
+                onClick={() => onDecrement(country.id, medal.name)}
+                disabled={medalCount === 0}
+              >
+                -
+              </Button>
+            </span>
+          </AppTooltip>
         </Flex>
-      </Table.RowHeaderCell>
-      <Table.Cell align="right" width="108px">
-        <Flex align="center" justify="between">
-          <Button
-            variant="ghost"
-            disabled={props.country[props.medal.name] === 0}
-          >
-            <MinusIcon
-              onClick={() =>
-                props.country[props.medal.name] > 0 &&
-                props.onDecrement(props.country.id, props.medal.name)
-              }
-            />
-          </Button>
-          <Badge variant="outline">{props.country[props.medal.name]}</Badge>
-          <Button variant="ghost">
-            <PlusIcon
-              onClick={() =>
-                props.onIncrement(props.country.id, props.medal.name)
-              }
-            />
-          </Button>
-        </Flex>
-      </Table.Cell>
-    </Table.Row>
+      )}
+    </Flex>
   );
 }
 

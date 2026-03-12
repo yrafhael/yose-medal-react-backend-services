@@ -2,27 +2,29 @@ import { useState } from "react";
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 import AppTooltip from "./AppTooltip";
 
-function NewCountry({ onAdd }) {
-  const [name, setName] = useState("");
+function LoginDialog({ onLogin }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const trimmedName = name.trim();
-
-    if (!trimmedName) {
-      setError("Country name is required.");
+    if (!username.trim() || !password.trim()) {
+      setError("Username and password are required.");
       return;
     }
 
-    const success = await onAdd(trimmedName);
+    const success = await onLogin(username.trim(), password);
 
     if (success) {
-      setName("");
+      setUsername("");
+      setPassword("");
       setError("");
       setOpen(false);
+    } else {
+      setError("Invalid username or password.");
     }
   }
 
@@ -30,29 +32,42 @@ function NewCountry({ onAdd }) {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger>
         <span>
-          <AppTooltip content="Add a new country">
-            <Button>Add Country</Button>
+          <AppTooltip content="Login">
+            <Button variant="soft">Login</Button>
           </AppTooltip>
         </span>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="450px">
-        <Dialog.Title>Add Country</Dialog.Title>
+        <Dialog.Title>Login</Dialog.Title>
         <Dialog.Description size="2" mb="4">
-          Enter the name of a new country.
+          Enter your username and password.
         </Dialog.Description>
 
         <form onSubmit={handleSubmit}>
           <Flex direction="column" gap="3">
             <label>
               <Text as="div" size="2" mb="1" weight="bold">
-                Country Name
+                Username
               </Text>
               <TextField.Root
-                placeholder="Enter country name"
-                value={name}
+                value={username}
                 onChange={(e) => {
-                  setName(e.target.value);
+                  setUsername(e.target.value);
+                  if (error) setError("");
+                }}
+              />
+            </label>
+
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
+                Password
+              </Text>
+              <TextField.Root
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
                   if (error) setError("");
                 }}
               />
@@ -71,9 +86,7 @@ function NewCountry({ onAdd }) {
                 </Button>
               </Dialog.Close>
 
-              <AppTooltip content="Save this country">
-                <Button type="submit">Save</Button>
-              </AppTooltip>
+              <Button type="submit">Login</Button>
             </Flex>
           </Flex>
         </form>
@@ -82,4 +95,4 @@ function NewCountry({ onAdd }) {
   );
 }
 
-export default NewCountry;
+export default LoginDialog;

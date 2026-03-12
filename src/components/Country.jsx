@@ -1,51 +1,45 @@
+import { Card, Flex, Heading, Text, Button } from "@radix-ui/themes";
 import Medal from "./Medal";
-import { Box, Table, Flex, Badge, Button } from "@radix-ui/themes";
-import { TrashIcon } from "@radix-ui/react-icons";
+import AppTooltip from "./AppTooltip";
 
-function Country(props) {
-  function getMedalsTotal() {
-    let sum = 0;
-    props.medals.forEach((medal) => {
-      sum += props.country[medal.name];
-    });
-    return sum;
-  }
+function Country({
+  country,
+  medals,
+  onDelete,
+  onIncrement,
+  onDecrement,
+  canDelete,
+  canPatch,
+}) {
+  const totalMedals = country.gold + country.silver + country.bronze;
 
   return (
-    <Box width="300px">
-      <Table.Root variant="surface">
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeaderCell colSpan="2">
-              <Flex justify="between">
-                <span>
-                  {props.country.name}
-                  <Badge variant="outline" ml="2">
-                    {getMedalsTotal(props.country, props.medals)}
-                  </Badge>
-                </span>
-                <Button color="red" variant="ghost" size="1">
-                  <TrashIcon onClick={() => props.onDelete(props.country.id)} />
-                </Button>
-              </Flex>
-            </Table.ColumnHeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {props.medals
-            .sort((a, b) => a.rank - b.rank)
-            .map((medal) => (
-              <Medal
-                key={medal.id}
-                medal={medal}
-                country={props.country}
-                onIncrement={props.onIncrement}
-                onDecrement={props.onDecrement}
-              />
-            ))}
-        </Table.Body>
-      </Table.Root>
-    </Box>
+    <Card>
+      <Flex direction="column" gap="3">
+        <Flex justify="between" align="center">
+          <Heading size="4">{country.name}</Heading>
+
+          {canDelete && (
+            <AppTooltip content="Delete this country">
+              <Button onClick={() => onDelete(country.id)}>Delete</Button>
+            </AppTooltip>
+          )}
+        </Flex>
+
+        {medals.map((medal) => (
+          <Medal
+            key={medal.id}
+            country={country}
+            medal={medal}
+            onIncrement={onIncrement}
+            onDecrement={onDecrement}
+            canPatch={canPatch}
+          />
+        ))}
+
+        <Text weight="bold">Total Medals: {totalMedals}</Text>
+      </Flex>
+    </Card>
   );
 }
 
